@@ -1,0 +1,14 @@
+[
+	// Add event right before auto-completion to show documentation
+	{
+		"keys": ["tab"],
+		"command": "insert_best_completion", 
+		"args": {"default": "", "exact": false}, 
+		"context": [
+			{ "key": "show_documentation"},
+			{ "key": "setting.tab_completion", "operator": "equal", "operand": true },
+			{ "key": "last_command", "operator": "not_equal", "operand": "insert_best_completion" },
+			{ "key": "auto_complete_visible" , "operator": "equal", "operand": false}
+		]
+	}
+]
