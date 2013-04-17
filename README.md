@@ -7,6 +7,8 @@ This Plug-in helps you with editing the Sublime Text 2 setting files.
 It displays all available settings through auto-completion.  
 It also displays the documentation of the just accepted setting.  
 
+To use it just **start typing** in a **user setting** file or press **ctrl+space** on an empty line for a full list of all available settings.
+
 Installation
 ------------
 **Not available yet**
