@@ -26,7 +26,16 @@ class EasySettings(sublime_plugin.EventListener):
             return view.file_name().split('.')[-1] == "sublime-settings"
         return False
 
+    def on_load(self, view):
+        self.load_completions(view)
+
+    def on_new(self, view):
+        self.load_completions(view)
+
     def on_activated(self, view):
+        self.load_completions(view)
+
+    def load_completions(self, view):
         if self.is_setting_file(view):
             base_name = self.find_base_file(view.file_name().split('\\')[-1])
             self.settings = self.parse_setting(base_name)
@@ -48,9 +57,9 @@ class EasySettings(sublime_plugin.EventListener):
                 if "//" == line.strip()[:2]:
                     current_comment += line
                 else:
-                    content += line
+                    content += line.split('//')[0]
                     if current_comment != "":
-                        current_comment += line
+                        current_comment += line.rstrip()
                         self.comments.append(current_comment)
                         current_comment = ""
             # Return json file
@@ -87,6 +96,7 @@ class EasySettings(sublime_plugin.EventListener):
                 self.b_did_autocomplete = False
                 region_line = view.line(view.sel()[0])
                 word = view.substr(region_line).strip()
+                view.window().run_command("hide_panel", {"panel": "output.settings_documentation_panel"})
                 panel = view.window().get_output_panel('settings_documentation_panel')
                 panel_edit = panel.begin_edit()
                 panel.insert(panel_edit, panel.size(), self.get_documentation_for(word))
@@ -105,10 +115,18 @@ class EasySettings(sublime_plugin.EventListener):
         return autocomplete_list
 
     def get_documentation_for(self, word):
-        print word
         for c in self.comments:
-            print c.split("\n")[-2]
-            if word in c.split("\n")[-2]:
-                print c
+            print c.split("\n")[-1]
+            prop = c.split("\n")[-1]
+            if word in prop:
+                # print c
+                c = "\n".join(c.split("\n")[:-1])
+                c += self.get_default_as_string(prop.strip().split(':')[0][1:-1])
                 return c
         return ""
+
+    def get_default_as_string(self, prop):
+        value = self.settings[prop]
+        prettyValue = json.dumps({prop: value}, sort_keys=True, indent=4)
+        prettyValue = prettyValue[1:-2]
+        return prettyValue
