@@ -11,13 +11,11 @@ To use it just **start typing** in a **user setting** file or press **ctrl+space
 
 Installation
 ------------
-**Not available yet**
-<pre>
 **Very easy with [Package Control](http://wbond.net/sublime_packages/package_control) right inside Sublime Text 2 (Package Control needs to be installed):**
 
 1.	Ctrl + shift + P
 2.  Search for "inst", hit enter
-3.  Search for "DictionaryAutoComplete", hit enter</pre>
+3.  Search for "DictionaryAutoComplete", hit enter
 
 **Manually (not recommended):**
 
