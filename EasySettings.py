@@ -37,14 +37,14 @@ class EasySettings(sublime_plugin.EventListener):
 
     def load_completions(self, view):
         if self.is_setting_file(view):
-            base_name = self.find_base_file(view.file_name().split('\\')[-1])
+            base_name = self.find_base_file(os.path.split(view.file_name())[-1])
             self.settings = self.parse_setting(base_name)
 
     # search for the base settings file
     def find_base_file(self, filename):
         for root, dirs, files in os.walk(sublime.packages_path()):
             if filename in files:
-                if os.path.join(root, filename).split('\\')[-2] != "User":
+                if os.path.join(root, filename).split(os.sep)[-2] != "User":
                     print "found: %s" % os.path.join(root, filename)
                     return os.path.join(root, filename)
 
