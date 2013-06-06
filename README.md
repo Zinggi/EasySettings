@@ -15,7 +15,7 @@ Installation
 
 1.	Ctrl + shift + P
 2.  Search for "inst", hit enter
-3.  Search for "DictionaryAutoComplete", hit enter
+3.  Search for "EasySettings", hit enter
 
 **Manually (not recommended):**
 
