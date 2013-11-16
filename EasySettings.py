@@ -2,7 +2,7 @@
 # Easy Settings
 #-----------------------------------------------------------------------------------
 #
-# This Plug-in helps you with editing the Sublime Text 2 setting files.
+# This Plug-in helps you with editing the Sublime Text 2/3 setting files.
 # It displays all available settings through auto-completion.
 # It also displays the documentation of the just accepted setting.
 #
@@ -10,6 +10,9 @@
 #-----------------------------------------------------------------------------------
 import sublime
 import sublime_plugin
+
+ST3 = int(sublime.version()) > 3000
+
 import json
 import os
 
@@ -27,12 +30,25 @@ class EasySettings(sublime_plugin.EventListener):
         return False
 
     def on_load(self, view):
-        self.load_completions(view)
+        if not ST3:
+            self.load_completions(view)
 
     def on_new(self, view):
-        self.load_completions(view)
+        if not ST3:
+            self.load_completions(view)
 
     def on_activated(self, view):
+        if not ST3:
+            self.load_completions(view)
+
+    # For ST3
+    def on_load_async(self, view):
+        self.load_completions(view)
+
+    def on_new_async(self, view):
+        self.load_completions(view)
+
+    def on_activated_async(self, view):
         self.load_completions(view)
 
     def load_completions(self, view):
@@ -45,17 +61,28 @@ class EasySettings(sublime_plugin.EventListener):
         for root, dirs, files in os.walk(sublime.packages_path()):
             if filename in files:
                 if os.path.join(root, filename).split(os.sep)[-2] != "User":
-                    print "found: %s" % os.path.join(root, filename)
+                    print("found: %s" % os.path.join(root, filename))
                     return os.path.join(root, filename)
+        if ST3:
+            return [x + "\n" for x in sublime.load_resource(sublime.find_resources(filename)[0]).split('\n')]
 
     # parse the setting file and capture comments
     def parse_setting(self, filename):
-        current_comment = ""
-        with open(filename) as f:
+
+        def parse(file_):
             content = ""
-            for line in f:
+            current_comment = ""
+            open_comment = False
+            for line in file_:
                 if "//" == line.strip()[:2]:
                     current_comment += line
+                elif open_comment:
+                    if "*/" in line.strip()[:2]:
+                        open_comment = False
+                    current_comment += line
+                elif "/*" in line.strip()[:2]:
+                    current_comment += line
+                    open_comment = True
                 else:
                     content += line.split('//')[0]
                     if current_comment != "":
@@ -64,6 +91,13 @@ class EasySettings(sublime_plugin.EventListener):
                         current_comment = ""
             # Return json file
             return json.loads(content)
+
+        if isinstance(filename, str):
+            with open(filename) as f:
+                return parse(f)
+        else:
+            print(filename)
+            return parse(filename)
 
     # gets called when auto-completion pops up.
     def on_query_completions(self, view, prefix, locations):
@@ -97,11 +131,16 @@ class EasySettings(sublime_plugin.EventListener):
                 region_line = view.line(view.sel()[0])
                 word = view.substr(region_line).strip()
                 view.window().run_command("hide_panel", {"panel": "output.settings_documentation_panel"})
-                panel = view.window().get_output_panel('settings_documentation_panel')
-                panel_edit = panel.begin_edit()
-                panel.insert(panel_edit, panel.size(), self.get_documentation_for(word))
-                panel.end_edit(panel_edit)
-                panel.show(panel.size())
+                if not ST3:
+                    panel = view.window().get_output_panel('settings_documentation_panel')
+                    panel_edit = panel.begin_edit()
+                    panel.insert(panel_edit, panel.size(), self.get_documentation_for(word))
+                    panel.end_edit(panel_edit)
+                    panel.show(panel.size())
+                else:
+                    panel = view.window().create_output_panel('settings_documentation_panel')
+                    panel.run_command('erase_view')
+                    panel.run_command('append', {'characters': self.get_documentation_for(word)})
                 view.window().run_command("show_panel", {"panel": "output.settings_documentation_panel"})
                 self.b_helper_panel_on = True
 
@@ -116,10 +155,10 @@ class EasySettings(sublime_plugin.EventListener):
 
     def get_documentation_for(self, word):
         for c in self.comments:
-            print c.split("\n")[-1]
+            print(c.split("\n")[-1])
             prop = c.split("\n")[-1]
             if word in prop:
-                # print c
+                # print(c)
                 c = "\n".join(c.split("\n")[:-1])
                 c += self.get_default_as_string(prop.strip().split(':')[0][1:-1])
                 return c

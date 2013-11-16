@@ -3,7 +3,7 @@ Easy Settings
 
 ![Pic](http://www.mediafire.com/convkey/5170/5mlumwsbc5ziulv6g.jpg)
 
-This Plug-in helps you with editing the Sublime Text 2 setting files.  
+This Plug-in helps you with editing the Sublime Text 2/3 setting files.  
 It displays all available settings through auto-completion.  
 It also displays the documentation of the just accepted setting.  
 
@@ -11,7 +11,7 @@ To use it just **start typing** in a **user setting** file or press **ctrl+space
 
 Installation
 ------------
-**Very easy with [Package Control](http://wbond.net/sublime_packages/package_control) right inside Sublime Text 2 (Package Control needs to be installed):**
+**Very easy with [Package Control](http://wbond.net/sublime_packages/package_control) right inside Sublime Text 2/3 (Package Control needs to be installed):**
 
 1.	Ctrl + shift + P
 2.  Search for "inst", hit enter
@@ -31,7 +31,7 @@ I'm open to donations :wink:
 * * *
 License
 ------------
-Easy Settings for Sublime Text 2
+Easy Settings for Sublime Text 2/3
 Copyright (C) 2013 Florian Zinggeler
 
 This program is free software: you can redistribute it and/or modify
