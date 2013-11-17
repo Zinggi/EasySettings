@@ -61,7 +61,7 @@ class EasySettings(sublime_plugin.EventListener):
         for root, dirs, files in os.walk(sublime.packages_path()):
             if filename in files:
                 if os.path.join(root, filename).split(os.sep)[-2] != "User":
-                    print("found: %s" % os.path.join(root, filename))
+                    # print("found: %s" % os.path.join(root, filename))
                     return os.path.join(root, filename)
         if ST3:
             return [x + "\n" for x in sublime.load_resource(sublime.find_resources(filename)[0]).split('\n')]
@@ -96,7 +96,7 @@ class EasySettings(sublime_plugin.EventListener):
             with open(filename) as f:
                 return parse(f)
         else:
-            print(filename)
+            # print(filename)
             return parse(filename)
 
     # gets called when auto-completion pops up.
@@ -155,7 +155,7 @@ class EasySettings(sublime_plugin.EventListener):
 
     def get_documentation_for(self, word):
         for c in self.comments:
-            print(c.split("\n")[-1])
+            # print(c.split("\n")[-1])
             prop = c.split("\n")[-1]
             if word in prop:
                 # print(c)
