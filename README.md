@@ -1,8 +1,6 @@
 Easy Settings
 ========================
 
-![Pic](http://www.mediafire.com/convkey/5170/5mlumwsbc5ziulv6g.jpg)
-
 This Plug-in helps you with editing the Sublime Text 2/3 setting files.  
 It displays all available settings through auto-completion.  
 It also displays the documentation of the just accepted setting.  
